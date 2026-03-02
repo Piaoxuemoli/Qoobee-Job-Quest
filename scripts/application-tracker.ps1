@@ -245,7 +245,7 @@ function Parse-Records {
 
     $items = New-Object System.Collections.Generic.List[object]
     $lines = $RecordsBlock -split "`r?`n"
-    foreach ($line in $lines) {
+        foreach ($line in $lines) {
         $trim = $line.Trim()
         if (-not $trim.StartsWith("|")) {
             continue
@@ -273,7 +273,7 @@ function Parse-Records {
             Notes = $cells[7]
         })
     }
-    return $items
+        return ,$items
 }
 
 function Build-RecordsTable {
@@ -474,6 +474,9 @@ try {
     $text = Get-Content -Raw -Path $ReadmePath
     $recordsBlock = Get-Block -Text $text -StartMarker $RecordsStart -EndMarker $RecordsEnd
     $records = Parse-Records -RecordsBlock $recordsBlock
+    if ($null -eq $records) {
+        $records = New-Object System.Collections.Generic.List[object]
+    }
 
     if ($Action -eq "add") {
         $finalCompany = Read-Required -Label "公司名" -Current $Company
