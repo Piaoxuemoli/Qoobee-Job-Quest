@@ -12,7 +12,7 @@ param(
     [string]$Time,
     [string]$Notes = "",
     [ValidateSet("ask", "yes", "no")]
-    [string]$Sync = "ask",
+    [string]$Sync = "no",
     [switch]$Initialize
 )
 
@@ -25,65 +25,30 @@ $RecordsEnd = "<!-- RECORDS_END -->"
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $ReadmePath = Join-Path $RepoRoot "README.md"
 
-function Read-YesNo {
-    param(
-        [string]$Message,
-        [bool]$DefaultNo = $true
-    )
-
-    $suffix = if ($DefaultNo) { "[y/N]" } else { "[Y/n]" }
-    $inputValue = Read-Host "$Message $suffix"
-    if ([string]::IsNullOrWhiteSpace($inputValue)) {
-        return -not $DefaultNo
-    }
-    return $inputValue.Trim().ToLowerInvariant() -in @("y", "yes")
-}
-
-function Read-Required {
+function Require-Value {
     param(
         [string]$Label,
-        [string]$Current
+        [string]$Value
     )
 
-    if (-not [string]::IsNullOrWhiteSpace($Current)) {
-        return $Current.Trim()
+    if ([string]::IsNullOrWhiteSpace($Value)) {
+        throw "缺少必填参数：$Label"
     }
-
-    while ($true) {
-        $value = Read-Host $Label
-        if (-not [string]::IsNullOrWhiteSpace($value)) {
-            return $value.Trim()
-        }
-        Write-Host "字段不能为空，请重新输入。" -ForegroundColor Yellow
-    }
+    return $Value.Trim()
 }
 
-function Read-Choice {
+function Validate-ChoiceValue {
     param(
         [string]$Label,
         [string[]]$Choices,
-        [string]$Current,
-        [bool]$AllowEmpty = $false
+        [string]$Value
     )
 
-    if (-not [string]::IsNullOrWhiteSpace($Current)) {
-        if ($Choices -contains $Current.Trim()) {
-            return $Current.Trim()
-        }
-        throw "字段 $Label 的取值不合法：$Current"
+    $trimmed = Require-Value -Label $Label -Value $Value
+    if ($Choices -notcontains $trimmed) {
+        throw "$Label 取值不合法：$trimmed。可选值：$($Choices -join '、')"
     }
-
-    while ($true) {
-        Write-Host "$Label 可选值：$($Choices -join '、')"
-        $value = Read-Host $Label
-        if ($AllowEmpty -and [string]::IsNullOrWhiteSpace($value)) {
-            return ""
-        }
-        if ($Choices -contains $value.Trim()) {
-            return $value.Trim()
-        }
-        Write-Host "取值不合法，请从枚举中选择。" -ForegroundColor Yellow
-    }
+    return $trimmed
 }
 
 function Normalize-DateTime {
@@ -163,8 +128,8 @@ $RecordsEnd
 ## 使用说明
 
 - 初始化 README 机器维护区块：`pwsh ./scripts/application-tracker.ps1 -Initialize`
-- 新增投递记录（交互）：`pwsh ./scripts/application-tracker.ps1 -Action add`
-- 修改投递记录（交互）：`pwsh ./scripts/application-tracker.ps1 -Action update`
+- 新增投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
+- 修改投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action update -Id "2026-001" -Progress "一面"`
 - 新增记录并直接指定字段：
     - `pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
 - 修改记录并指定 ID：
@@ -405,20 +370,11 @@ function Find-RecordIndex {
         throw "未找到匹配记录（公司+岗位+时间）。"
     }
 
-    Write-Host "匹配到多条记录，请选择目标序号：" -ForegroundColor Yellow
-    for ($j = 0; $j -lt $candidates.Count; $j++) {
-        $record = $Records[$candidates[$j]]
-        Write-Host "[$j] $($record.Id) | $($record.Time) | $($record.Company) | $($record.Role) | $($record.Progress)"
-    }
-
-    while ($true) {
-        $raw = Read-Host "输入序号"
-        $picked = -1
-        if ([int]::TryParse($raw, [ref]$picked) -and $picked -ge 0 -and $picked -lt $candidates.Count) {
-            return $candidates[$picked]
-        }
-        Write-Host "序号无效，请重试。" -ForegroundColor Yellow
-    }
+    $candidateSummary = ($candidates | ForEach-Object {
+        $record = $Records[$_]
+        "$($record.Id) | $($record.Time) | $($record.Company) | $($record.Role) | $($record.Progress)"
+    }) -join "；"
+    throw "匹配到多条记录，请使用 -Id 精确指定。候选：$candidateSummary"
 }
 
 function Save-Readme {
@@ -440,7 +396,10 @@ function Sync-Repo {
     switch ($Mode) {
         "yes" { $shouldSync = $true }
         "no" { $shouldSync = $false }
-        default { $shouldSync = Read-YesNo -Message "是否同步到 GitHub？" -DefaultNo $true }
+        default {
+            Write-Host "Sync=ask 在非交互模式下已自动视为不同步；如需同步请显式传入 -Sync yes。" -ForegroundColor Yellow
+            $shouldSync = $false
+        }
     }
 
     if (-not $shouldSync) {
@@ -499,11 +458,11 @@ try {
     }
 
     if ($Action -eq "add") {
-        $finalCompany = Read-Required -Label "公司名" -Current $Company
-        $finalTrackType = Read-Choice -Label "投递类型" -Choices $TrackTypes -Current $TrackType
-        $finalProgress = Read-Choice -Label "当前进度" -Choices $ProgressList -Current $Progress
-        $finalRole = Read-Required -Label "投递岗位" -Current $Role
-        $finalUrl = Validate-UrlValue -Value (Read-Required -Label "官网网址" -Current $Url)
+        $finalCompany = Require-Value -Label "Company" -Value $Company
+        $finalTrackType = Validate-ChoiceValue -Label "TrackType" -Choices $TrackTypes -Value $TrackType
+        $finalProgress = Validate-ChoiceValue -Label "Progress" -Choices $ProgressList -Value $Progress
+        $finalRole = Require-Value -Label "Role" -Value $Role
+        $finalUrl = Validate-UrlValue -Value (Require-Value -Label "Url" -Value $Url)
         $finalTime = Normalize-DateTime -Value $Time
         $finalNotes = $Notes
 
@@ -532,61 +491,58 @@ try {
         $locatorRole = $Role
         $locatorTime = $Time
 
-        if ([string]::IsNullOrWhiteSpace($Id)) {
-            if ([string]::IsNullOrWhiteSpace($locatorCompany)) { $locatorCompany = Read-Host "公司名（定位用）" }
-            if ([string]::IsNullOrWhiteSpace($locatorRole)) { $locatorRole = Read-Host "岗位（定位用）" }
-            if ([string]::IsNullOrWhiteSpace($locatorTime)) { $locatorTime = Read-Host "时间（定位用）" }
-        }
-
         $index = Find-RecordIndex -Records $records -IdValue $Id -CompanyValue $locatorCompany -RoleValue $locatorRole -TimeValue $locatorTime
         $record = $records[$index]
+        $original = [pscustomobject]@{
+            TrackType = $record.TrackType
+            Progress = $record.Progress
+            Role = $record.Role
+            Url = $record.Url
+            Time = $record.Time
+            Notes = $record.Notes
+        }
 
         $newTrackType = $TrackType
         $newProgress = $Progress
         $newRole = $Role
         $newUrl = $Url
         $newTime = $Time
-        $newNotes = ""
+        $newNotes = $Notes
 
-        if ([string]::IsNullOrWhiteSpace($newTrackType)) {
-            $inputType = Read-Host "投递类型新值（留空不改）"
-            if (-not [string]::IsNullOrWhiteSpace($inputType)) {
-                if ($TrackTypes -notcontains $inputType.Trim()) { throw "投递类型不合法：$inputType" }
-                $newTrackType = $inputType.Trim()
-            }
+        if (-not [string]::IsNullOrWhiteSpace($newTrackType) -and $TrackTypes -notcontains $newTrackType.Trim()) {
+            throw "投递类型不合法：$newTrackType"
+        }
+        if (-not [string]::IsNullOrWhiteSpace($newProgress) -and $ProgressList -notcontains $newProgress.Trim()) {
+            throw "进度不合法：$newProgress"
         }
 
-        if ([string]::IsNullOrWhiteSpace($newProgress)) {
-            $inputProgress = Read-Host "当前进度新值（留空不改）"
-            if (-not [string]::IsNullOrWhiteSpace($inputProgress)) {
-                if ($ProgressList -notcontains $inputProgress.Trim()) { throw "进度不合法：$inputProgress" }
-                $newProgress = $inputProgress.Trim()
-            }
+        $hasAnyUpdate = @($newTrackType, $newProgress, $newRole, $newUrl, $newTime, $newNotes) |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+        if ($hasAnyUpdate.Count -eq 0) {
+            throw "未提供任何可更新字段。请至少传入 TrackType/Progress/Role/Url/Time/Notes 之一。"
         }
 
-        if ([string]::IsNullOrWhiteSpace($newRole)) {
-            $inputRole = Read-Host "岗位新值（留空不改）"
-            if (-not [string]::IsNullOrWhiteSpace($inputRole)) { $newRole = $inputRole.Trim() }
-        }
-
-        if ([string]::IsNullOrWhiteSpace($newUrl)) {
-            $inputUrl = Read-Host "官网新值（留空不改）"
-            if (-not [string]::IsNullOrWhiteSpace($inputUrl)) { $newUrl = $inputUrl.Trim() }
-        }
-
-        if ([string]::IsNullOrWhiteSpace($newTime)) {
-            $inputTime = Read-Host "时间新值（留空不改）"
-            if (-not [string]::IsNullOrWhiteSpace($inputTime)) { $newTime = $inputTime.Trim() }
-        }
-
-        $newNotes = Read-Host "备注新值（留空不改）"
-
-        if (-not [string]::IsNullOrWhiteSpace($newTrackType)) { $record.TrackType = $newTrackType }
-        if (-not [string]::IsNullOrWhiteSpace($newProgress)) { $record.Progress = $newProgress }
-        if (-not [string]::IsNullOrWhiteSpace($newRole)) { $record.Role = $newRole }
+        if (-not [string]::IsNullOrWhiteSpace($newTrackType)) { $record.TrackType = $newTrackType.Trim() }
+        if (-not [string]::IsNullOrWhiteSpace($newProgress)) { $record.Progress = $newProgress.Trim() }
+        if (-not [string]::IsNullOrWhiteSpace($newRole)) { $record.Role = $newRole.Trim() }
         if (-not [string]::IsNullOrWhiteSpace($newUrl)) { $record.Url = Validate-UrlValue -Value $newUrl }
         if (-not [string]::IsNullOrWhiteSpace($newTime)) { $record.Time = Normalize-DateTime -Value $newTime }
         if (-not [string]::IsNullOrWhiteSpace($newNotes)) { $record.Notes = $newNotes.Trim() }
+
+        $changed = (
+            $record.TrackType -ne $original.TrackType -or
+            $record.Progress -ne $original.Progress -or
+            $record.Role -ne $original.Role -or
+            $record.Url -ne $original.Url -or
+            $record.Time -ne $original.Time -or
+            $record.Notes -ne $original.Notes
+        )
+
+        if (-not $changed) {
+            Write-Host "未检测到字段变化，已跳过写入。" -ForegroundColor Cyan
+            Sync-Repo -Mode $Sync
+            exit 0
+        }
 
         $records[$index] = $record
         Save-Readme -Records $records
