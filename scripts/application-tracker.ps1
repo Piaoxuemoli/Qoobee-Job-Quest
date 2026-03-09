@@ -22,6 +22,8 @@ $SummaryStart = "<!-- SUMMARY_START -->"
 $SummaryEnd = "<!-- SUMMARY_END -->"
 $RecordsStart = "<!-- RECORDS_START -->"
 $RecordsEnd = "<!-- RECORDS_END -->"
+$TimelineStart = "<!-- TIMELINE_START -->"
+$TimelineEnd = "<!-- TIMELINE_END -->"
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $ReadmePath = Join-Path $RepoRoot "README.md"
 
@@ -125,15 +127,22 @@ $RecordsStart
 | --- | --- | --- | --- | --- | --- | --- | --- |
 $RecordsEnd
 
+## 投递时间轴
+
+$TimelineStart
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+</div>
+$TimelineEnd
+
 ## 使用说明
 
 - 初始化 README 机器维护区块：`pwsh ./scripts/application-tracker.ps1 -Initialize`
 - 新增投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
-- 修改投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action update -Id "2026-001" -Progress "一面"`
+- 修改投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action update -Id "001" -Progress "一面"`
 - 新增记录并直接指定字段：
     - `pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
 - 修改记录并指定 ID：
-    - `pwsh ./scripts/application-tracker.ps1 -Action update -Id "2026-001" -Progress "一面"`
+    - `pwsh ./scripts/application-tracker.ps1 -Action update -Id "001" -Progress "一面"`
 
 ## 记录规则
 
@@ -141,6 +150,7 @@ $RecordsEnd
 - 进度枚举：已投递、测评、HR联系、笔试、一面、二面、三面、四面、面委会、HR面、Offer、拒绝、主动中止
 - 进度非必经：允许跳过部分阶段，允许在任意阶段更新为拒绝或主动中止
 - 修改定位优先级：ID > 公司+岗位+时间
+- 编号规则：三位数字 ID（001、002...），每次写回会按投递时间降序全量重编号
 
 ## 验证清单（MVP）
 
@@ -164,17 +174,14 @@ function Ensure-ReadmeReady {
     }
 
     $text = Get-Content -Raw -Path $ReadmePath
-    $hasMarkers = $text.Contains($SummaryStart) -and $text.Contains($SummaryEnd) -and $text.Contains($RecordsStart) -and $text.Contains($RecordsEnd)
+    $hasCoreMarkers = $text.Contains($SummaryStart) -and $text.Contains($SummaryEnd) -and $text.Contains($RecordsStart) -and $text.Contains($RecordsEnd)
 
-    if ($hasMarkers) {
-        return
-    }
+    if (-not $hasCoreMarkers) {
+        if (-not $AllowRepair) {
+            throw "README 缺少机器维护标记区块。请先执行: pwsh ./scripts/application-tracker.ps1 -Initialize"
+        }
 
-    if (-not $AllowRepair) {
-        throw "README 缺少机器维护标记区块。请先执行: pwsh ./scripts/application-tracker.ps1 -Initialize"
-    }
-
-    $appendix = @"
+        $appendix = @"
 
 ## 投递概览（机器维护）
 
@@ -191,6 +198,26 @@ $RecordsStart
 | ID | 时间 | 公司 | 类型 | 岗位 | 进度 | 官网 | 备注 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 $RecordsEnd
+"@
+
+        $text = $text + $appendix
+        Set-Content -Path $ReadmePath -Value $text -Encoding UTF8
+        $text = Get-Content -Raw -Path $ReadmePath
+    }
+
+    $hasTimelineMarkers = $text.Contains($TimelineStart) -and $text.Contains($TimelineEnd)
+    if ($hasTimelineMarkers) {
+        return
+    }
+
+    $appendix = @"
+
+## 投递时间轴（机器维护）
+
+$TimelineStart
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+</div>
+$TimelineEnd
 "@
 
     Set-Content -Path $ReadmePath -Value ($text + $appendix) -Encoding UTF8
@@ -277,6 +304,56 @@ function Build-RecordsTable {
     return ($lines -join "`r`n")
 }
 
+function Build-Timeline {
+    param([System.Collections.Generic.List[object]]$Records)
+
+    $sorted = $Records | Sort-Object @{Expression = { [datetime]::Parse($_.Time) }; Descending = $true }, @{Expression = { $_.Company }}, @{Expression = { $_.Role }}
+    $lines = New-Object System.Collections.Generic.List[string]
+    $lines.Add('<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">')
+
+    foreach ($record in $sorted) {
+        $companySafe = [System.Security.SecurityElement]::Escape($record.Company)
+        $timeSafe = [System.Security.SecurityElement]::Escape($record.Time)
+        $lines.Add(('  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="{0}">{1}</span>' -f $timeSafe, $companySafe))
+    }
+
+    $lines.Add('</div>')
+    return ($lines -join "`r`n")
+}
+
+function Convert-IdToNumber {
+    param([string]$IdValue)
+
+    if ([string]::IsNullOrWhiteSpace($IdValue)) {
+        return $null
+    }
+
+    $trimmed = $IdValue.Trim()
+    if ($trimmed -match '^(\d{3})$') {
+        return [int]$Matches[1]
+    }
+    if ($trimmed -match '^\d{4}-(\d{3})$') {
+        return [int]$Matches[1]
+    }
+    return $null
+}
+
+function Normalize-RecordIds {
+    param([System.Collections.Generic.List[object]]$Records)
+
+    $sorted = $Records | Sort-Object @{Expression = { [datetime]::Parse($_.Time) }; Descending = $true }, @{Expression = { $_.Company }}, @{Expression = { $_.Role }}, @{Expression = { $_.Id }}
+    $normalized = New-Object System.Collections.Generic.List[object]
+
+    $index = 1
+    foreach ($record in $sorted) {
+        $record.Id = "{0:d3}" -f $index
+        $normalized.Add($record)
+        $index++
+    }
+
+    return $normalized
+}
+
 function Build-Summary {
     param([System.Collections.Generic.List[object]]$Records)
 
@@ -316,17 +393,14 @@ function Get-NextId {
         [string]$TimeValue
     )
 
-    $year = [datetime]::Parse($TimeValue).ToString("yyyy")
     $maxNum = 0
     foreach ($record in $Records) {
-        if ($record.Id -match "^$year-(\d{3})$") {
-            $current = [int]$Matches[1]
-            if ($current -gt $maxNum) {
-                $maxNum = $current
-            }
+        $current = Convert-IdToNumber -IdValue $record.Id
+        if ($null -ne $current -and $current -gt $maxNum) {
+            $maxNum = $current
         }
     }
-    return "$year-{0:d3}" -f ($maxNum + 1)
+    return "{0:d3}" -f ($maxNum + 1)
 }
 
 function Find-RecordIndex {
@@ -381,12 +455,17 @@ function Save-Readme {
     param([System.Collections.Generic.List[object]]$Records)
 
     $text = Get-Content -Raw -Path $ReadmePath
-    $summaryBody = Build-Summary -Records $Records
-    $recordsBody = Build-RecordsTable -Records $Records
+    $normalizedRecords = Normalize-RecordIds -Records $Records
+    $summaryBody = Build-Summary -Records $normalizedRecords
+    $recordsBody = Build-RecordsTable -Records $normalizedRecords
+    $timelineBody = Build-Timeline -Records $normalizedRecords
 
     $updated = Set-Block -Text $text -StartMarker $SummaryStart -EndMarker $SummaryEnd -Body $summaryBody
     $updated = Set-Block -Text $updated -StartMarker $RecordsStart -EndMarker $RecordsEnd -Body $recordsBody
+    $updated = Set-Block -Text $updated -StartMarker $TimelineStart -EndMarker $TimelineEnd -Body $timelineBody
     Set-Content -Path $ReadmePath -Value $updated -Encoding UTF8
+
+    return $normalizedRecords
 }
 
 function Sync-Repo {
@@ -472,6 +551,7 @@ try {
         }
 
         $records.Add([pscustomobject]@{
+            InternalKey = [guid]::NewGuid().ToString("N")
             Id = $finalId
             Time = $finalTime
             Company = $finalCompany
@@ -482,8 +562,14 @@ try {
             Notes = $finalNotes
         })
 
-        Save-Readme -Records $records
-        Write-Host "已新增记录：$finalId" -ForegroundColor Green
+        $savedRecords = Save-Readme -Records $records
+        $savedItem = $savedRecords | Where-Object { $_.InternalKey -eq $records[-1].InternalKey } | Select-Object -First 1
+        if ($null -ne $savedItem) {
+            Write-Host "已新增记录：$($savedItem.Id)" -ForegroundColor Green
+        }
+        else {
+            Write-Host "已新增记录：$finalId" -ForegroundColor Green
+        }
     }
 
     if ($Action -eq "update") {
@@ -545,9 +631,15 @@ try {
         }
 
         $records[$index] = $record
-        Save-Readme -Records $records
+        $savedRecords = Save-Readme -Records $records
+        $savedItem = $savedRecords | Where-Object { $_.Company -eq $record.Company -and $_.Role -eq $record.Role -and $_.Time -eq $record.Time -and $_.Url -eq $record.Url } | Select-Object -First 1
         Write-Host "已更新记录：$($record.Id)" -ForegroundColor Green
-        Write-Host "修改后：$($record.Time) | $($record.Company) | $($record.Role) | $($record.Progress)"
+        if ($null -ne $savedItem) {
+            Write-Host "修改后：$($savedItem.Id) | $($savedItem.Time) | $($savedItem.Company) | $($savedItem.Role) | $($savedItem.Progress)"
+        }
+        else {
+            Write-Host "修改后：$($record.Time) | $($record.Company) | $($record.Role) | $($record.Progress)"
+        }
     }
 
     Sync-Repo -Mode $Sync

@@ -5,10 +5,10 @@
 ## 投递概览
 
 <!-- SUMMARY_START -->
-- 总投递数：10
-- 按类型统计：秋招 0｜春招 0｜日常实习 1｜暑期实习 9
-- 按进度统计：已投递 6｜测评 3｜HR联系 0｜笔试 0｜一面 0｜二面 0｜三面 0｜四面 0｜面委会 0｜HR面 0｜Offer 0｜拒绝 0｜主动中止 1
-- 最近更新时间：2026-03-08 00:34
+- 总投递数：12
+- 按类型统计：秋招 0｜春招 0｜日常实习 1｜暑期实习 11
+- 按进度统计：已投递 8｜测评 3｜HR联系 0｜笔试 0｜一面 0｜二面 0｜三面 0｜四面 0｜面委会 0｜HR面 0｜Offer 0｜拒绝 0｜主动中止 1
+- 最近更新时间：2026-03-10 00:58
 <!-- SUMMARY_END -->
 
 ## 投递明细
@@ -16,27 +16,29 @@
 <!-- RECORDS_START -->
 | ID | 时间 | 公司 | 类型 | 岗位 | 进度 | 官网 | 备注 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-009 | 2026-03-06 00:00 | 蚂蚁 | 暑期实习 | 前端开发工程师 | 测评 | https://talent.antgroup.com/personal/campus-application |  |
-| 2026-010 | 2026-03-06 00:00 | 拼多多 | 暑期实习 | web前端研发实习生 | 已投递 | https://careers.pddglobalhr.com/campus/personal-center |  |
-| 2026-005 | 2026-03-03 00:00 | 网易雷火 | 暑期实习 | web前端开发实习生（游戏宣发官网方向）（精英实习） | 已投递 | https://campus.163.com/app/personal/apply |  |
-| 2026-006 | 2026-03-03 00:00 | 携程 | 暑期实习 | 前端开发工程师 | 测评 | https://job.ctrip.com/#/personal-homepage |  |
-| 2026-007 | 2026-03-03 00:00 | 拓竹 | 暑期实习 | 前端开发工程师 | 已投递 | https://bambulab.jobs.feishu.cn/campus/position/application |  |
-| 2026-008 | 2026-03-03 00:00 | minmax | 暑期实习 | Agent 前端开发实习生 | 已投递 | https://vrfi1sk8a0.jobs.feishu.cn/379481/position/application?share_token=MzsxNzQ1OTE2ODE1MTk4Ozc0OTg2NTUwOTM0MDA3NTAzNzU7MDsxLzI |  |
-| 2026-004 | 2026-02-28 00:00 | 米哈游 | 暑期实习 | 前端开发实习生 | 主动中止 | https://jobs.mihoyo.com/#/campus/applyRecord | 曾HR联系 |
-| 2026-002 | 2026-02-27 00:00 | vivo | 暑期实习 | 软件工程师（前端方向） | 测评 | https://hr-campus.vivo.com/personal/deliveryRecord |  |
-| 2026-003 | 2026-02-27 00:00 | 腾讯音乐 | 暑期实习 | 软件开发-前端开发方向 | 已投递 | https://join.tencentmusic.com/deliver |  |
-| 2026-001 | 2026-02-11 00:00 | 微软 | 日常实习 | Software Engineer | 已投递 | https://apply.careers.microsoft.com/careers/dashboard?domain=microsoft.com |  |
+| 001 | 2026-03-10 00:00 | 京东 | 暑期实习 | 前端开发工程师 | 已投递 | https://campus.jd.com/#/myDeliver?type=internship |  |
+| 002 | 2026-03-10 00:00 | 米哈游 | 暑期实习 | 前端开发实习生（研发效能） | 已投递 | https://jobs.mihoyo.com/#/campus/applyRecord |  |
+| 003 | 2026-03-06 00:00 | 蚂蚁 | 暑期实习 | 前端开发工程师 | 测评 | https://talent.antgroup.com/personal/campus-application |  |
+| 004 | 2026-03-06 00:00 | 拼多多 | 暑期实习 | web前端研发实习生 | 已投递 | https://careers.pddglobalhr.com/campus/personal-center |  |
+| 005 | 2026-03-03 00:00 | 拓竹 | 暑期实习 | 前端开发工程师 | 已投递 | https://bambulab.jobs.feishu.cn/campus/position/application |  |
+| 006 | 2026-03-03 00:00 | 网易雷火 | 暑期实习 | web前端开发实习生（游戏宣发官网方向）（精英实习） | 已投递 | https://campus.163.com/app/personal/apply |  |
+| 007 | 2026-03-03 00:00 | 携程 | 暑期实习 | 前端开发工程师 | 测评 | https://job.ctrip.com/#/personal-homepage |  |
+| 008 | 2026-03-03 00:00 | minmax | 暑期实习 | Agent 前端开发实习生 | 已投递 | https://vrfi1sk8a0.jobs.feishu.cn/379481/position/application?share_token=MzsxNzQ1OTE2ODE1MTk4Ozc0OTg2NTUwOTM0MDA3NTAzNzU7MDsxLzI |  |
+| 009 | 2026-02-28 00:00 | 米哈游 | 暑期实习 | 前端开发实习生 | 主动中止 | https://jobs.mihoyo.com/#/campus/applyRecord | 曾HR联系 |
+| 010 | 2026-02-27 00:00 | 腾讯音乐 | 暑期实习 | 软件开发-前端开发方向 | 已投递 | https://join.tencentmusic.com/deliver |  |
+| 011 | 2026-02-27 00:00 | vivo | 暑期实习 | 软件工程师（前端方向） | 测评 | https://hr-campus.vivo.com/personal/deliveryRecord |  |
+| 012 | 2026-02-11 00:00 | 微软 | 日常实习 | Software Engineer | 已投递 | https://apply.careers.microsoft.com/careers/dashboard?domain=microsoft.com |  |
 <!-- RECORDS_END -->
 
 ## 使用说明
 
 - 初始化 README 机器维护区块：`pwsh ./scripts/application-tracker.ps1 -Initialize`
 - 新增投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
-- 修改投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action update -Id "2026-001" -Progress "一面"`
+- 修改投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action update -Id "001" -Progress "一面"`
 - 新增记录并直接指定字段：
   - `pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
 - 修改记录并指定 ID：
-  - `pwsh ./scripts/application-tracker.ps1 -Action update -Id "2026-001" -Progress "一面"`
+  - `pwsh ./scripts/application-tracker.ps1 -Action update -Id "001" -Progress "一面"`
 
 ## 记录规则
 
@@ -44,6 +46,7 @@
 - 进度枚举：已投递、测评、HR联系、笔试、一面、二面、三面、四面、面委会、HR面、Offer、拒绝、主动中止
 - 进度非必经：允许跳过部分阶段，允许在任意阶段更新为拒绝或主动中止
 - 修改定位优先级：ID > 公司+岗位+时间
+- 编号规则：三位数字 ID（001、002...），每次写回会按投递时间降序全量重编号
 
 ## 验证清单（MVP）
 
@@ -65,4 +68,26 @@
 
 
 
+
+
+
+
+## 投递时间轴（机器维护）
+
+<!-- TIMELINE_START -->
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-10 00:00">京东</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-10 00:00">米哈游</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-06 00:00">蚂蚁</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-06 00:00">拼多多</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-03 00:00">拓竹</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-03 00:00">网易雷火</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-03 00:00">携程</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-03 00:00">minmax</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-02-28 00:00">米哈游</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-02-27 00:00">腾讯音乐</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-02-27 00:00">vivo</span>
+  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-02-11 00:00">微软</span>
+</div>
+<!-- TIMELINE_END -->
 
