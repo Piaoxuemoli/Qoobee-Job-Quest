@@ -30,64 +30,21 @@
 | 012 | 2026-02-11 00:00 | 微软 | 日常实习 | Software Engineer | 已投递 | https://apply.careers.microsoft.com/careers/dashboard?domain=microsoft.com |  |
 <!-- RECORDS_END -->
 
-## 使用说明
-
-- 初始化 README 机器维护区块：`pwsh ./scripts/application-tracker.ps1 -Initialize`
-- 新增投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
-- 修改投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action update -Id "001" -Progress "一面"`
-- 新增记录并直接指定字段：
-  - `pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
-- 修改记录并指定 ID：
-  - `pwsh ./scripts/application-tracker.ps1 -Action update -Id "001" -Progress "一面"`
-
-## 记录规则
-
-- 投递类型枚举：秋招、春招、日常实习、暑期实习
-- 进度枚举：已投递、测评、HR联系、笔试、一面、二面、三面、四面、面委会、HR面、Offer、拒绝、主动中止
-- 进度非必经：允许跳过部分阶段，允许在任意阶段更新为拒绝或主动中止
-- 修改定位优先级：ID > 公司+岗位+时间
-- 编号规则：三位数字 ID（001、002...），每次写回会按投递时间降序全量重编号
-
-## 验证清单（MVP）
-
-- [ ] 新增记录成功并重算统计
-- [ ] 修改记录成功并重算统计
-- [ ] 非法输入（时间/URL/进度）被拒绝
-- [ ] 多候选记录触发二次确认
-- [ ] 拒绝同步时仅保留本地 README 变更
-- [ ] 同步失败时保留本地提交并输出错误原因
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## 投递时间轴（机器维护）
 
 <!-- TIMELINE_START -->
-<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-10 00:00">京东</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-10 00:00">米哈游</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-06 00:00">蚂蚁</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-06 00:00">拼多多</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-03 00:00">拓竹</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-03 00:00">网易雷火</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-03 00:00">携程</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-03-03 00:00">minmax</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-02-28 00:00">米哈游</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-02-27 00:00">腾讯音乐</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-02-27 00:00">vivo</span>
-  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="2026-02-11 00:00">微软</span>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;line-height:1.2;">
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-10 00:00"><strong style="font-weight:600;">03-10 00:00</strong><span>京东</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-10 00:00"><strong style="font-weight:600;">03-10 00:00</strong><span>米哈游</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-06 00:00"><strong style="font-weight:600;">03-06 00:00</strong><span>蚂蚁</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-06 00:00"><strong style="font-weight:600;">03-06 00:00</strong><span>拼多多</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-03 00:00"><strong style="font-weight:600;">03-03 00:00</strong><span>拓竹</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-03 00:00"><strong style="font-weight:600;">03-03 00:00</strong><span>网易雷火</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-03 00:00"><strong style="font-weight:600;">03-03 00:00</strong><span>携程</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-03 00:00"><strong style="font-weight:600;">03-03 00:00</strong><span>minmax</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-02-28 00:00"><strong style="font-weight:600;">02-28 00:00</strong><span>米哈游</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-02-27 00:00"><strong style="font-weight:600;">02-27 00:00</strong><span>腾讯音乐</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-02-27 00:00"><strong style="font-weight:600;">02-27 00:00</strong><span>vivo</span></span>
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-02-11 00:00"><strong style="font-weight:600;">02-11 00:00</strong><span>微软</span></span>
 </div>
 <!-- TIMELINE_END -->
-

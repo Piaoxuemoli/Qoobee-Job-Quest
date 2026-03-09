@@ -133,33 +133,6 @@ $TimelineStart
 <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
 </div>
 $TimelineEnd
-
-## 使用说明
-
-- 初始化 README 机器维护区块：`pwsh ./scripts/application-tracker.ps1 -Initialize`
-- 新增投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
-- 修改投递记录（参数化）：`pwsh ./scripts/application-tracker.ps1 -Action update -Id "001" -Progress "一面"`
-- 新增记录并直接指定字段：
-    - `pwsh ./scripts/application-tracker.ps1 -Action add -Company "示例公司" -TrackType "春招" -Progress "已投递" -Role "后端开发" -Url "https://example.com/jobs/1" -Time "2026-03-02 21:30"`
-- 修改记录并指定 ID：
-    - `pwsh ./scripts/application-tracker.ps1 -Action update -Id "001" -Progress "一面"`
-
-## 记录规则
-
-- 投递类型枚举：秋招、春招、日常实习、暑期实习
-- 进度枚举：已投递、测评、HR联系、笔试、一面、二面、三面、四面、面委会、HR面、Offer、拒绝、主动中止
-- 进度非必经：允许跳过部分阶段，允许在任意阶段更新为拒绝或主动中止
-- 修改定位优先级：ID > 公司+岗位+时间
-- 编号规则：三位数字 ID（001、002...），每次写回会按投递时间降序全量重编号
-
-## 验证清单（MVP）
-
-- [ ] 新增记录成功并重算统计
-- [ ] 修改记录成功并重算统计
-- [ ] 非法输入（时间/URL/进度）被拒绝
-- [ ] 多候选记录触发二次确认
-- [ ] 拒绝同步时仅保留本地 README 变更
-- [ ] 同步失败时保留本地提交并输出错误原因
 "@
 }
 
@@ -309,12 +282,14 @@ function Build-Timeline {
 
     $sorted = $Records | Sort-Object @{Expression = { [datetime]::Parse($_.Time) }; Descending = $true }, @{Expression = { $_.Company }}, @{Expression = { $_.Role }}
     $lines = New-Object System.Collections.Generic.List[string]
-    $lines.Add('<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">')
+    $lines.Add('<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;line-height:1.2;">')
 
     foreach ($record in $sorted) {
         $companySafe = [System.Security.SecurityElement]::Escape($record.Company)
         $timeSafe = [System.Security.SecurityElement]::Escape($record.Time)
-        $lines.Add(('  <span style="display:inline-flex;white-space:nowrap;border:1px solid;border-radius:999px;padding:2px 10px;" title="{0}">{1}</span>' -f $timeSafe, $companySafe))
+        $displayTime = [datetime]::Parse($record.Time).ToString("MM-dd HH:mm")
+        $displayTimeSafe = [System.Security.SecurityElement]::Escape($displayTime)
+        $lines.Add(('  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="{0}"><strong style="font-weight:600;">{1}</strong><span>{2}</span></span>' -f $timeSafe, $displayTimeSafe, $companySafe))
     }
 
     $lines.Add('</div>')
