@@ -287,7 +287,7 @@ function Build-Timeline {
     foreach ($record in $sorted) {
         $companySafe = [System.Security.SecurityElement]::Escape($record.Company)
         $timeSafe = [System.Security.SecurityElement]::Escape($record.Time)
-        $displayTime = [datetime]::Parse($record.Time).ToString("MM-dd HH:mm")
+        $displayTime = [datetime]::Parse($record.Time).ToString("MM-dd")
         $displayTimeSafe = [System.Security.SecurityElement]::Escape($displayTime)
         $lines.Add(('  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="{0}"><strong style="font-weight:600;">{1}</strong><span>{2}</span></span>' -f $timeSafe, $displayTimeSafe, $companySafe))
     }
@@ -316,7 +316,7 @@ function Convert-IdToNumber {
 function Normalize-RecordIds {
     param([System.Collections.Generic.List[object]]$Records)
 
-    $sorted = $Records | Sort-Object @{Expression = { [datetime]::Parse($_.Time) }; Descending = $true }, @{Expression = { $_.Company }}, @{Expression = { $_.Role }}, @{Expression = { $_.Id }}
+    $sorted = $Records | Sort-Object @{Expression = { [datetime]::Parse($_.Time) }; Descending = $false }, @{Expression = { Convert-IdToNumber -IdValue $_.Id }; Descending = $true }
     $normalized = New-Object System.Collections.Generic.List[object]
 
     $index = 1
