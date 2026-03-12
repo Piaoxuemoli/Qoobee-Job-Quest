@@ -5,10 +5,10 @@
 ## 投递概览
 
 <!-- SUMMARY_START -->
-- 总投递数：14
-- 按类型统计：秋招 0｜春招 0｜日常实习 1｜暑期实习 13
-- 按进度统计：已投递 8｜测评 5｜HR联系 0｜笔试 0｜一面 0｜二面 0｜三面 0｜四面 0｜面委会 0｜HR面 0｜Offer 0｜拒绝 0｜主动中止 1
-- 最近更新时间：2026-03-11 23:27
+- 总投递数：15
+- 按类型统计：秋招 0｜春招 0｜日常实习 1｜暑期实习 14
+- 按进度统计：已投递 8｜测评 5｜HR联系 0｜笔试 0｜一面 1｜二面 0｜三面 0｜四面 0｜面委会 0｜HR面 0｜Offer 0｜拒绝 0｜主动中止 1
+- 最近更新时间：2026-03-12 23:46
 <!-- SUMMARY_END -->
 
 ## 投递明细
@@ -16,7 +16,8 @@
 <!-- RECORDS_START -->
 | ID | 时间 | 公司 | 类型 | 岗位 | 进度 | 官网 | 备注 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 013 | 2026-03-11 00:00 | 字节跳动 | 暑期实习 | 前端开发实习生（跨境电商业务）-TikTok Shop | 已投递 | https://jobs.bytedance.com/campus/resume/view |  |
+| 015 | 2026-03-12 00:00 | 快手 | 暑期实习 | 前端开发工程师 | 已投递 | https://campus.kuaishou.cn/recruit/campus/e/#/campus/my-apply |  |
+| 013 | 2026-03-11 00:00 | 字节跳动 | 暑期实习 | 前端开发实习生（跨境电商业务）-TikTok Shop | 一面 | https://jobs.bytedance.com/campus/resume/view |  |
 | 014 | 2026-03-11 00:00 | 美团 | 暑期实习 | 软件开发工程师（前端） | 已投递 | https://zhaopin.meituan.com/web/position/detail?jobUnionId=4213684352&jobShareType=1&highlightType=campus |  |
 | 011 | 2026-03-10 00:00 | 京东 | 暑期实习 | 前端开发工程师 | 测评 | https://campus.jd.com/#/myDeliver?type=internship |  |
 | 012 | 2026-03-10 00:00 | 米哈游 | 暑期实习 | 前端开发实习生（研发效能） | 测评 | https://jobs.mihoyo.com/#/campus/applyRecord |  |
@@ -36,6 +37,7 @@
 
 <!-- TIMELINE_START -->
 <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;line-height:1.2;">
+  <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-12 00:00"><strong style="font-weight:600;">03-12</strong><span>快手</span></span>
   <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-11 00:00"><strong style="font-weight:600;">03-11</strong><span>美团</span></span>
   <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-11 00:00"><strong style="font-weight:600;">03-11</strong><span>字节跳动</span></span>
   <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-03-10 00:00"><strong style="font-weight:600;">03-10</strong><span>京东</span></span>
@@ -52,6 +54,8 @@
   <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid #d0d7de;border-radius:999px;padding:4px 10px;background:#f6f8fa;" title="2026-02-11 00:00"><strong style="font-weight:600;">02-11</strong><span>微软</span></span>
 </div>
 <!-- TIMELINE_END -->
+
+
 
 
 
